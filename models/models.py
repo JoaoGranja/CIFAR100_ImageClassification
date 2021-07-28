@@ -13,11 +13,15 @@ def vgg16(input_shape, num_classes, activation="softmax"):
                     input_shape=input_shape, 
     )  # Do not include the ImageNet classifier at the top.
     # Freeze the base_model
-    base_model.trainable = True
+    base_model.trainable = False
     
     #Build the model
     x = base_model(img_input, training=False)
     x = GlobalAveragePooling2D()(x)
+    x = Dense(256, activation='relu')(x)
+    #x = Dropout(0.5)(x)
+    x = Dense(126, activation='relu')(x)
+    #x = Dropout(0.5)(x)
     outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
     model = Model(img_input, outputs, name="VGG16")
     return model
@@ -30,14 +34,17 @@ def vgg19(input_shape, num_classes, activation="softmax"):
                     input_shape=input_shape, 
     )  # Do not include the ImageNet classifier at the top.
     # Freeze the base_model
-    base_model.trainable = True
+    base_model.trainable = False
     
     #Build the model
-    model=Sequential(name="VGG19")
-    model.add(img_input)   #Adds the input layer
-    model.add(base_model)  #Adds the base model (in this case vgg19)
-    model.add(Flatten())   #Flatten base model output
-    model.add(Dense(num_classes, activation=activation)) #Adds a fully connected layer with output = num_classes
+    x = base_model(img_input, training=False)
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(256, activation='relu')(x)
+    #x = Dropout(0.5)(x)
+    x = Dense(126, activation='relu')(x)
+    #x = Dropout(0.5)(x)
+    outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
+    model = Model(img_input, outputs, name="VGG19")  
     return model
 
 def resnet50(input_shape, num_classes, activation="softmax"):
@@ -51,11 +58,16 @@ def resnet50(input_shape, num_classes, activation="softmax"):
 
     # Freeze the base_model
     base_model.trainable = False
-    model=Sequential(name="resnet50")
-    model.add(img_input)   #Adds the input layer
-    model.add(base_model)  #Adds the base model (in this case resnet50)
-    model.add(Flatten())   #Flatten base model output
-    model.add(Dense(num_classes, activation=activation)) #Adds a fully connected layer with output = num_classes
+    
+    #Build the model
+    x = base_model(img_input, training=False)
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(256, activation='relu')(x)
+    #x = Dropout(0.5)(x)
+    x = Dense(126, activation='relu')(x)
+    #x = Dropout(0.5)(x)
+    outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
+    model = Model(img_input, outputs, name="resnet50")  
     return model
 
 def resnet101(input_shape, num_classes, activation="softmax"):
@@ -66,14 +78,18 @@ def resnet101(input_shape, num_classes, activation="softmax"):
                     input_shape=input_shape,  
                     classes=10,
     )  # Do not include the ImageNet classifier at the top.
-
     # Freeze the base_model
-    base_model.trainable = False
-    model=Sequential(name="resnet101")
-    model.add(img_input)   #Adds the input layer
-    model.add(base_model)  #Adds the base model (in this case resnet101)
-    model.add(Flatten())   #Flatten base model output
-    model.add(Dense(num_classes, activation=activation)) #Adds a fully connected layer with output = num_classes
+    base_model.trainable = True
+    
+    #Build the model
+    x = base_model(img_input, training=False)
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(256, activation='relu')(x)
+    #x = Dropout(0.5)(x)
+    x = Dense(126, activation='relu')(x)
+    #x = Dropout(0.5)(x)
+    outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
+    model = Model(img_input, outputs, name="resnet101")  
     return model
 
 def inception(input_shape, num_classes, activation="sigmoid"):
@@ -84,14 +100,18 @@ def inception(input_shape, num_classes, activation="sigmoid"):
                     input_shape=input_shape,  
                     classes=10,
     )  # Do not include the ImageNet classifier at the top.
-
     # Freeze the base_model
     base_model.trainable = False
-    model=Sequential(name="inception")
-    model.add(img_input)   #Adds the input layer
-    model.add(base_model)  #Adds the base model (in this case xception)
-    model.add(Flatten())   #Flatten base model output
-    model.add(Dense(num_classes, activation=activation)) #Adds a fully connected layer with output = num_classes
+    
+    #Build the model
+    x = base_model(img_input, training=False)
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(256, activation='relu')(x)
+    #x = Dropout(0.5)(x)
+    x = Dense(126, activation='relu')(x)
+    #x = Dropout(0.5)(x)
+    outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
+    model = Model(img_input, outputs, name="inception")  
     return model
 
 def efficientNet(input_shape, num_classes, activation="sigmoid"):
@@ -102,14 +122,18 @@ def efficientNet(input_shape, num_classes, activation="sigmoid"):
                     input_shape=input_shape,  
                     classes=10,
     )  # Do not include the ImageNet classifier at the top.
-
     # Freeze the base_model
     base_model.trainable = False
-    model=Sequential(name="efficientNet")
-    model.add(img_input)   #Adds the input layer
-    model.add(base_model)  #Adds the base model (in this case EfficientNetB0)
-    model.add(Flatten())   #Flatten base model output
-    model.add(Dense(num_classes, activation=activation)) #Adds a fully connected layer with output = num_classes
+    
+    #Build the model
+    x = base_model(img_input, training=False)
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(256, activation='relu')(x)
+    #x = Dropout(0.5)(x)
+    x = Dense(126, activation='relu')(x)
+    #x = Dropout(0.5)(x)
+    outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
+    model = Model(img_input, outputs, name="efficientNet")  
     return model
 
 def leNet(input_shape, num_classes, activation="sigmoid"):   
