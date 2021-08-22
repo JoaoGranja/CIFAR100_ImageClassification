@@ -4,9 +4,9 @@ from models.models import resnet101, resnet50, inception, vgg19, vgg16, efficien
 def make_model(network, input_shape, num_classes):
     if network == 'LeNet':
         return leNet(input_shape, num_classes, activation="softmax")
-    elif network == 'VGG19':
+    elif network == 'vgg19':
         return vgg19(input_shape, num_classes, activation="softmax")
-    elif network == 'VGG16':
+    elif network == 'vgg16':
         return vgg16(input_shape, num_classes, activation="softmax")
     elif network == 'resnet50':
         return resnet50(input_shape, num_classes, activation="softmax")
