@@ -1,15 +1,22 @@
 import tensorflow.keras as K
 import tensorflow as tf
+from tensorflow.keras import layers
 from tensorflow.keras import Model, Input, Sequential
 from tensorflow.keras.layers import Dense, MaxPooling2D, Flatten, Conv2D, GlobalAveragePooling2D, Dropout, BatchNormalization, Lambda
 from tensorflow.keras.utils import get_file
 from tensorflow.keras.applications import VGG16, VGG19, ResNet50, ResNet101, EfficientNetB0, InceptionV3
 import tensorflow_hub as hub
-from vit_keras import vit
+#from vit_keras import vit
+
+data_augmentation = Sequential(
+    [
+        layers.Resizing(224, 224),
+    ],
+    name="data_augmentation",
+)
 
 
 def vgg16(input_shape, num_classes, activation="softmax"):
-    img_input = Input(shape=input_shape)
     base_model = VGG16(
                     include_top=False,
                     weights="imagenet",  # Load weights pre-trained on ImageNet.
@@ -36,7 +43,6 @@ def vgg16(input_shape, num_classes, activation="softmax"):
     return model
 
 def vgg19(input_shape, num_classes, activation="softmax"):
-    img_input = Input(shape=input_shape)
     base_model = VGG19(
                     include_top=False,
                     weights="imagenet",  # Load weights pre-trained on ImageNet.
@@ -47,7 +53,8 @@ def vgg19(input_shape, num_classes, activation="softmax"):
     
         #Build the model
     img_input = Input(shape=input_shape)
-    x = Lambda(lambda image: tf.image.resize(image, (224,224)))(img_input)
+    #x = Lambda(lambda image: tf.image.resize(image, (224,224)))(img_input)
+    x = data_augmentation(img_input)
     x = K.applications.vgg19.preprocess_input(x)
     x = base_model(x, training=False)
     x = GlobalAveragePooling2D()(x)
@@ -158,7 +165,6 @@ def inception(input_shape, num_classes, activation="softmax"):
     return model
 
 def efficientNetB0(input_shape, num_classes, activation="softmax"):
-    img_input = Input(shape=input_shape)
     base_model = EfficientNetB0(
                     include_top=False,
                     weights="imagenet",  # Load weights pre-trained on ImageNet.
@@ -169,7 +175,8 @@ def efficientNetB0(input_shape, num_classes, activation="softmax"):
     
      #Build the model
     img_input = Input(shape=input_shape)
-    x = Lambda(lambda image: tf.image.resize(image, (224,224)))(img_input)
+    #x = Lambda(lambda image: tf.image.resize(image, (224,224)))(img_input)
+    x = img_input
     #x = K.applications.EfficientNetB0.preprocess_input(x)
     x = base_model(x, training=False)
     x = GlobalAveragePooling2D()(x)
@@ -258,7 +265,6 @@ def get_hub_url_and_isize(model_name, ckpt_type, hub_type):
   return hub_url, image_size
 
 def efficientNetV2(input_shape, num_classes, activation="softmax"):
-    img_input = Input(shape=input_shape)
     #base_model = effnetv2_model.get_model('efficientnetv2-b0', include_top=False)
 
     model_name = 'efficientnetv2-b0' 
@@ -291,22 +297,23 @@ def efficientNetV2(input_shape, num_classes, activation="softmax"):
     model = Model(img_input, outputs, name="efficientNetV2")  
     return model
 
-
+'''
 def ViT(input_shape, num_classes, activation="softmax"):
-    img_input = Input(shape=input_shape)
     base_model = vit.vit_b32(
-        image_size = 224,
+        image_size = 32,
         activation = 'softmax',
         pretrained = True,
-        include_top = True,
+        include_top = False,
         pretrained_top = False,
         classes=num_classes)
 
     #Build the model
     img_input = Input(shape=input_shape)
-    x = vit.preprocess_inputs(img_input)
-    x = Lambda(lambda image: tf.image.resize(image, (224,224)))(x)
-    outputs = base_model(x, training=False)
+    #x = vit.preprocess_inputs(img_input)
+    x = img_input
+    #x = Lambda(lambda image: tf.image.resize(image, (224,224)))(x)
+    x = base_model(x, training=False)
+    x = Flatten()(x)
     #x = GlobalAveragePooling2D()(x)
     #x = BatchNormalization()(x)
     #x = Dense(512, activation='relu')(x)
@@ -314,15 +321,16 @@ def ViT(input_shape, num_classes, activation="softmax"):
     #x = BatchNormalization()(x)
     #x = Dense(512, activation='relu')(x)
     #x = Dropout(0.3)(x)
-    #x = BatchNormalization()(x)
-    #x = Dense(256, activation='relu')(x)
+    x = BatchNormalization()(x)
+    x = Dense(256, activation='relu')(x)
     #x = Dropout(0.3)(x)
     #x = BatchNormalization()(x)
     #x = Dense(128, activation='relu')(x)
     #x = Dropout(0.3)(x)
-    #outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
+    outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
     model = Model(img_input, outputs, name="ViT")  
     return model
+'''
 
 def leNet(input_shape, num_classes, activation="softmax"):   
     
