@@ -27,9 +27,11 @@ def make_model(network, input_shape, num_classes):
     elif network == 'efficientnetv2':
         from models.models import efficientNetV2
         return efficientNetV2(input_shape, num_classes, activation="softmax")
-    elif network == 'vit':
+    elif network == 'vit-b32':
+        from models.models import ViT
+        return ViT(input_shape, num_classes, activation="softmax")
+    elif network == 'vit_scratch':
         from models.ViT import create_vit_classifier
-        #return ViT(input_shape, num_classes, activation="softmax")
         return create_vit_classifier(input_shape, num_classes)
     else:
         raise ValueError('unknown network ' + network)

@@ -5,7 +5,7 @@ from tensorflow.keras import layers
 import tensorflow_addons as tfa
 
 
-image_size = 32  # We'll resize input images to this size
+image_size = 72  # We'll resize input images to this size
 patch_size = 6  # Size of the patches to be extract from the input images
 num_patches = (image_size // patch_size) ** 2
 projection_dim = 64
@@ -42,6 +42,9 @@ class Patches(layers.Layer):
         patches = tf.reshape(patches, [batch_size, -1, patch_dims])
         return patches
 
+    def get_config(self):
+        return {"patch_size": self.patch_size}
+
 
 
 class PatchEncoder(layers.Layer):
@@ -58,13 +61,18 @@ class PatchEncoder(layers.Layer):
         encoded = self.projection(patch) + self.position_embedding(positions)
         return encoded
 
+    def get_config(self):
+        return {"num_patches": self.num_patches}
+
 
 def create_vit_classifier(input_shape, num_classes):
     inputs = layers.Input(shape=input_shape)
     # Augment data.
     #augmented = data_augmentation(inputs)
+    x = layers.Lambda(lambda image: tf.image.resize(image, (image_size,image_size)) * 1./255 - 1.)(inputs)
+    #x = inputs
     # Create patches.
-    patches = Patches(patch_size)(inputs)
+    patches = Patches(patch_size)(x)
     # Encode patches.
     encoded_patches = PatchEncoder(num_patches, projection_dim)(patches)
 
@@ -88,11 +96,11 @@ def create_vit_classifier(input_shape, num_classes):
     # Create a [batch_size, projection_dim] tensor.
     representation = layers.LayerNormalization(epsilon=1e-6)(encoded_patches)
     representation = layers.Flatten()(representation)
-    representation = layers.Dropout(0.5)(representation)
+    representation = layers.Dropout(0.2)(representation)
     # Add MLP.
-    features = mlp(representation, hidden_units=mlp_head_units, dropout_rate=0.5)
+    features = mlp(representation, hidden_units=mlp_head_units, dropout_rate=0.2)
     # Classify outputs.
-    logits = layers.Dense(num_classes)(features)
+    logits = layers.Dense(num_classes, activation="softmax")(features)
     # Create the Keras model.
-    model = keras.Model(inputs=inputs, outputs=logits, name="ViT")
+    model = keras.Model(inputs=inputs, outputs=logits, name="vit_scratch")
     return model
