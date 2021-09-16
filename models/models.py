@@ -64,10 +64,10 @@ def vgg19(input_shape, num_classes, activation="softmax"):
     x = GlobalAveragePooling2D()(x)
     x = BatchNormalization()(x)
     x = Dense(512, activation='relu')(x)
-    x = Dropout(0.3)(x)
+    #x = Dropout(0.3)(x)
     x = BatchNormalization()(x)
-    x = Dense(256, activation='relu')(x)
-    x = Dropout(0.3)(x)
+    #x = Dense(256, activation='relu')(x)
+    #x = Dropout(0.3)(x)
     outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
     model = Model(img_input, outputs, name="VGG19")  
     return model
@@ -94,9 +94,9 @@ def resnet50(input_shape, num_classes, activation="softmax"):
     x = Dense(512, activation='relu')(x)
     #x = Dropout(0.3)(x)
     x = BatchNormalization()(x)
-    x = Dense(512, activation='relu')(x)
+    #x = Dense(512, activation='relu')(x)
     #x = Dropout(0.3)(x)
-    x = BatchNormalization()(x)
+    #x = BatchNormalization()(x)
     #x = Dense(256, activation='relu')(x)
     #x = Dropout(0.3)(x)
     #x = BatchNormalization()(x)
@@ -186,6 +186,7 @@ def efficientNetB0(input_shape, num_classes, activation="softmax"):
      #Build the model
     img_input = Input(shape=input_shape)
     x = Lambda(lambda image: tf.image.resize(image, (224,224)))(img_input)
+    
     #x = data_normalization(img_input)
     #x = img_input
     x = base_model(x, training=False)
@@ -291,9 +292,9 @@ def efficientNetV2(input_shape, num_classes, activation="softmax"):
     #x = data_normalization(img_input)
     x = base_model(x, training=False)
     #x = GlobalAveragePooling2D()(x)
-    #x = BatchNormalization()(x)
-    #x = Dense(512, activation='relu')(x)
-    x = Dropout(0.2)(x)
+    x = BatchNormalization()(x)
+    x = Dense(512, activation='relu')(x)
+    #x = Dropout(0.2)(x)
     x = BatchNormalization()(x)
     #x = Dense(512, activation='relu')(x)
     #x = Dropout(0.3)(x)
@@ -325,6 +326,7 @@ def ViT(input_shape, num_classes, activation="softmax"):
     x = Lambda(lambda image: tf.image.resize(image, (224,224)))(img_input)
     #x = img_input
     #x = vit.preprocess_inputs(img_input)
+    x = vit.preprocess_inputs(x)
     x = base_model(x, training=False)
     x = Flatten()(x)
     #x = GlobalAveragePooling2D()(x)
