@@ -8,7 +8,7 @@ import tensorflow_addons as tfa
 image_size = 72  # We'll resize input images to this size
 patch_size = 6  # Size of the patches to be extract from the input images
 num_patches = (image_size // patch_size) ** 2
-projection_dim = 64
+projection_dim = 32
 num_heads = 4
 transformer_units = [
     projection_dim * 2,
@@ -25,7 +25,7 @@ def mlp(x, hidden_units, dropout_rate):
 
 
 class Patches(layers.Layer):
-    def __init__(self, patch_size):
+    def __init__(self, patch_size, **kwargs):
         super(Patches, self).__init__()
         self.patch_size = patch_size
 
@@ -43,14 +43,21 @@ class Patches(layers.Layer):
         return patches
 
     def get_config(self):
-        return {"patch_size": self.patch_size}
+        config = super(Patches, self).get_config()
+        config.update({"patch_size": self.patch_size})
+        return config
+
+    #@classmethod
+    #def from_config(cls, config):
+    #    return cls(**config)
 
 
 
 class PatchEncoder(layers.Layer):
-    def __init__(self, num_patches, projection_dim):
+    def __init__(self, num_patches, projection_dim,  **kwargs):
         super(PatchEncoder, self).__init__()
         self.num_patches = num_patches
+        self.projection_dim = projection_dim
         self.projection = layers.Dense(units=projection_dim)
         self.position_embedding = layers.Embedding(
             input_dim=num_patches, output_dim=projection_dim
@@ -62,14 +69,21 @@ class PatchEncoder(layers.Layer):
         return encoded
 
     def get_config(self):
-        return {"num_patches": self.num_patches}
+        config = super(PatchEncoder, self).get_config()
+        config.update({"num_patches": self.num_patches, "projection_dim": self.projection_dim})
+        return config
+    
+    #@classmethod
+    #def from_config(cls, config):
+    #    return cls(**config)
 
 
 def create_vit_classifier(input_shape, num_classes):
     inputs = layers.Input(shape=input_shape)
     # Augment data.
     #augmented = data_augmentation(inputs)
-    x = layers.Lambda(lambda image: tf.image.resize(image, (image_size,image_size)) * 1./255 - 1.)(inputs)
+    x = layers.Lambda(lambda image: tf.image.resize(image, (image_size,image_size)))(inputs)
+    #x = layers.Lambda(lambda image: tf.image.resize(image, (image_size,image_size)) * 1./255 - 1.)(inputs)
     #x = inputs
     # Create patches.
     patches = Patches(patch_size)(x)

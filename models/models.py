@@ -42,7 +42,7 @@ def vgg16(input_shape, num_classes, activation="softmax"):
     x = Dropout(0.3)(x)
     x = BatchNormalization()(x)
     outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
-    model = Model(img_input, outputs, name="VGG16")
+    model = Model(img_input, outputs, name="vgg16")
     return model
 
 def vgg19(input_shape, num_classes, activation="softmax"):
@@ -69,7 +69,7 @@ def vgg19(input_shape, num_classes, activation="softmax"):
     #x = Dense(256, activation='relu')(x)
     #x = Dropout(0.3)(x)
     outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
-    model = Model(img_input, outputs, name="VGG19")  
+    model = Model(img_input, outputs, name="vgg19")  
     return model
 
 def resnet50(input_shape, num_classes, activation="softmax"):
@@ -204,7 +204,7 @@ def efficientNetB0(input_shape, num_classes, activation="softmax"):
     #x = Dense(128, activation='relu')(x)
     #x = Dropout(0.3)(x)
     outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
-    model = Model(img_input, outputs, name="efficientNetB0")  
+    model = Model(img_input, outputs, name="efficientnetb0")  
     return model
 
 def get_hub_url_and_isize(model_name, ckpt_type, hub_type):
@@ -283,7 +283,7 @@ def efficientNetV2(input_shape, num_classes, activation="softmax"):
     hub_type = 'feature-vector' 
     hub_url, image_size = get_hub_url_and_isize(model_name, ckpt_type, hub_type)
 
-    base_model = hub.KerasLayer(hub_url, trainable=False, name="efficientnetv2")
+    base_model = hub.KerasLayer(hub_url, trainable=False, name="efficientNetV2")
     rescale=1./255
 
     #Build the model
@@ -305,7 +305,7 @@ def efficientNetV2(input_shape, num_classes, activation="softmax"):
     #x = Dense(128, activation='relu')(x)
     #x = Dropout(0.3)(x)
     outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
-    model = Model(img_input, outputs, name="efficientNetV2")  
+    model = Model(img_input, outputs, name="efficientnetv2")  
     return model
 
 
@@ -343,7 +343,7 @@ def ViT(input_shape, num_classes, activation="softmax"):
     #x = Dense(128, activation='relu')(x)
     #x = Dropout(0.3)(x)
     outputs = Dense(num_classes, activation=activation)(x) #Adds a fully connected layer with output = num_classes
-    model = Model(img_input, outputs, name="ViT")  
+    model = Model(img_input, outputs, name="vit-b32")  
     return model
 
 
