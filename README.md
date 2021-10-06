@@ -19,8 +19,9 @@ The 'image_classification_main.ipynb' script was created to train and evaluate t
   <li>Evaluation - After all models are trained, the evaluation over a testing dataset is done. </li>
 </ul>
 
-In sume, the six models achieved
+Comparing the results obtained from all 6 models VGG19, Resnet50, efficientNetB0, efficientnetv2, vit-b32 and vit_scratch, it is possible to conclude that the model with the best result is vit-b32 followed by Resnet50. Indeed vit-b32 has the highest accuracy evaluated on testing dataset, around 91% which is very impressive. The second best model, Resnet50 achieved 78%.
+It is important to note that all pre-trained models achieve good results, higher than 72%. Probably tuning hyperparameters of the models and training more epochs, that results could be even better. The unique model trained from scratch didn't achieve great results, around 36%, but there was a lot of space to improve that results. More epochs and use larger dataset were needed. 
 
-of accuracy over the testing dataset, with VGG16 model achieved the highest score (more than 83%).
+
 The goal of this project was not to achieve the highest accuracy score over the CIFAR100 dataset but to approach the Image Classification task. For better results, several future works are usefull (use better data augmentation techniques, apply regularization techniques to reduce overfitting, tune hyperparameters of the model) 
 
